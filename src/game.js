@@ -16,6 +16,10 @@ export class BlackjackGame {
     this.dealerRevealed = false;
     this.phase = 'betting';
     this.message = '베팅 금액을 선택해 라운드를 시작하세요.';
+    this.moneyEffects = [];
+    this.moneyEffectId = 0;
+    this.dealOrder = 0;
+    this.scoreOutcome = { player: null, dealer: null };
   }
 
   createFreshDeck() {
@@ -23,7 +27,7 @@ export class BlackjackGame {
   }
 
   setMode(mode) {
-    if (!['easy', 'hard'].includes(mode) || this.phase === 'player-turn') {
+    if (!['easy', 'hard'].includes(mode) || ['player-turn', 'dealer-turn'].includes(this.phase)) {
       return;
     }
 
@@ -41,10 +45,18 @@ export class BlackjackGame {
     this.dealerRevealed = false;
     this.phase = 'betting';
     this.message = '새 게임입니다. 베팅 금액을 선택하세요.';
+    this.moneyEffects = [];
+    this.dealOrder = 0;
+    this.scoreOutcome = { player: null, dealer: null };
   }
 
   startRound(bet) {
-    if (this.phase === 'player-turn') {
+    if (['player-turn', 'dealer-turn'].includes(this.phase)) {
+      return;
+    }
+
+    if (this.phase === 'game-over') {
+      this.message = '게임에서 패배했습니다. Esc를 눌러 새 게임을 시작하세요.';
       return;
     }
 
@@ -57,18 +69,20 @@ export class BlackjackGame {
       this.deck = this.createFreshDeck();
     }
 
-    this.money -= bet;
+    this.changeMoney(-bet);
     this.currentBet = bet;
     this.playerHand = [];
     this.dealerHand = [];
     this.playerActions = 0;
     this.dealerRevealed = false;
+    this.dealOrder = 0;
+    this.scoreOutcome = { player: null, dealer: null };
     this.phase = 'player-turn';
 
-    this.playerHand.push(drawCard(this.deck));
-    this.dealerHand.push(drawCard(this.deck));
-    this.playerHand.push(drawCard(this.deck));
-    this.dealerHand.push(drawCard(this.deck));
+    this.dealCard(this.playerHand);
+    this.dealCard(this.dealerHand);
+    this.dealCard(this.playerHand);
+    this.dealCard(this.dealerHand);
 
     this.message = 'Hit, Stand, Double Down, Surrender 중 하나를 선택하세요.';
     this.resolveOpeningBlackjack();
@@ -85,16 +99,25 @@ export class BlackjackGame {
     this.dealerRevealed = true;
 
     if (playerBlackjack && dealerBlackjack) {
-      this.finishRound(this.currentBet, '둘 다 Blackjack입니다. Push로 베팅금을 돌려받았습니다.');
+      this.finishRound(this.currentBet, '무승부', {
+        player: 'push',
+        dealer: 'push',
+      });
       return;
     }
 
     if (playerBlackjack) {
-      this.finishRound(this.currentBet * 2.5, 'Blackjack! 베팅금의 2.5배를 받았습니다.');
+      this.finishRound(this.currentBet * 2.5, '블랙잭!', {
+        player: 'win',
+        dealer: 'lose',
+      });
       return;
     }
 
-    this.finishRound(0, '딜러가 Blackjack입니다. 라운드에서 패배했습니다.');
+    this.finishRound(0, '패배...', {
+      player: 'lose',
+      dealer: 'win',
+    });
   }
 
   hit() {
@@ -102,12 +125,15 @@ export class BlackjackGame {
       return;
     }
 
-    this.playerHand.push(drawCard(this.deck));
+    this.dealCard(this.playerHand);
     this.playerActions += 1;
 
     if (isBust(this.playerHand)) {
       this.dealerRevealed = true;
-      this.finishRound(0, 'Bust! 21을 넘어서 패배했습니다.');
+      this.finishRound(0, '패배...', {
+        player: 'lose',
+        dealer: 'win',
+      });
       return;
     }
 
@@ -125,9 +151,7 @@ export class BlackjackGame {
     }
 
     this.playerActions += 1;
-    this.dealerRevealed = true;
-    this.playDealerTurn();
-    this.settleRound();
+    this.startDealerTurn();
   }
 
   doubleDown() {
@@ -136,19 +160,21 @@ export class BlackjackGame {
       return;
     }
 
-    this.money -= this.currentBet;
+    this.changeMoney(-this.currentBet);
     this.currentBet *= 2;
-    this.playerHand.push(drawCard(this.deck));
+    this.dealCard(this.playerHand);
     this.playerActions += 1;
-    this.dealerRevealed = true;
 
     if (isBust(this.playerHand)) {
-      this.finishRound(0, 'Double Down 후 Bust! 라운드에서 패배했습니다.');
+      this.dealerRevealed = true;
+      this.finishRound(0, '패배...', {
+        player: 'lose',
+        dealer: 'win',
+      });
       return;
     }
 
-    this.playDealerTurn();
-    this.settleRound();
+    this.startDealerTurn('Double Down! 딜러의 숨겨진 카드를 공개합니다.');
   }
 
   surrender() {
@@ -159,13 +185,42 @@ export class BlackjackGame {
 
     this.dealerRevealed = true;
     this.playerActions += 1;
-    this.finishRound(this.currentBet * 0.5, 'Surrender를 선택해 베팅금의 절반을 돌려받았습니다.');
+    this.finishRound(
+      this.currentBet * 0.5,
+      '폴드',
+      {
+        player: 'lose',
+        dealer: 'win',
+      },
+    );
   }
 
-  playDealerTurn() {
-    while (this.shouldDealerHit()) {
-      this.dealerHand.push(drawCard(this.deck));
+  startDealerTurn(message = '딜러의 숨겨진 카드를 공개합니다.') {
+    this.dealerRevealed = true;
+    this.phase = 'dealer-turn';
+    this.message = message;
+  }
+
+  dealerHit() {
+    if (this.phase !== 'dealer-turn' || !this.shouldDealerHit()) {
+      return false;
     }
+
+    this.dealCard(this.dealerHand);
+    const dealerValue = calculateHandValue(this.dealerHand);
+    this.message = dealerValue.bust
+      ? '딜러가 21을 넘었습니다. 결과를 확인합니다.'
+      : '딜러가 카드를 한 장 더 받았습니다.';
+
+    return true;
+  }
+
+  completeDealerTurn() {
+    if (this.phase !== 'dealer-turn') {
+      return;
+    }
+
+    this.settleRound();
   }
 
   shouldDealerHit() {
@@ -183,27 +238,80 @@ export class BlackjackGame {
     const dealerValue = calculateHandValue(this.dealerHand);
 
     if (dealerValue.bust) {
-      this.finishRound(this.currentBet * 2, '딜러가 Bust했습니다. 승리!');
+      this.finishRound(
+        this.currentBet * 2,
+        '승리!',
+        {
+          player: 'win',
+          dealer: 'lose',
+        },
+      );
       return;
     }
 
     if (playerValue.total > dealerValue.total) {
-      this.finishRound(this.currentBet * 2, `승리! ${playerValue.total} 대 ${dealerValue.total}입니다.`);
+      this.finishRound(
+        this.currentBet * 2,
+        '승리!',
+        {
+          player: 'win',
+          dealer: 'lose',
+        },
+      );
       return;
     }
 
     if (playerValue.total < dealerValue.total) {
-      this.finishRound(0, `패배했습니다. ${playerValue.total} 대 ${dealerValue.total}입니다.`);
+      this.finishRound(0, '패배...', {
+        player: 'lose',
+        dealer: 'win',
+      });
       return;
     }
 
-    this.finishRound(this.currentBet, `Push입니다. ${playerValue.total} 대 ${dealerValue.total}입니다.`);
+    this.finishRound(this.currentBet, '무승부', {
+      player: 'push',
+      dealer: 'push',
+    });
   }
 
-  finishRound(payout, message) {
-    this.money += payout;
+  finishRound(payout, message, scoreOutcome = { player: null, dealer: null }) {
+    this.changeMoney(payout);
+    this.scoreOutcome = scoreOutcome;
+
+    if (this.money <= 0) {
+      this.money = 0;
+      this.phase = 'game-over';
+      this.message = `${message}\n소지금이 $0이 되어 게임에서 패배했습니다. Esc를 눌러 새 게임을 시작하세요.`;
+      return;
+    }
+
     this.phase = 'round-over';
-    this.message = message;
+    this.message = `${message}\n다음 라운드의 베팅금액을 선택하세요.`;
+  }
+
+  changeMoney(amount) {
+    if (amount === 0) {
+      return;
+    }
+
+    this.money += amount;
+    this.moneyEffectId += 1;
+    this.moneyEffects.push({
+      id: this.moneyEffectId,
+      amount,
+    });
+
+    if (this.moneyEffects.length > 20) {
+      this.moneyEffects.shift();
+    }
+  }
+
+  dealCard(hand) {
+    const card = drawCard(this.deck);
+    card.dealOrder = this.dealOrder;
+    this.dealOrder += 1;
+    hand.push(card);
   }
 
   canDoubleDown() {
@@ -230,6 +338,8 @@ export class BlackjackGame {
       dealerRevealed: this.dealerRevealed,
       phase: this.phase,
       message: this.message,
+      moneyEffects: [...this.moneyEffects],
+      scoreOutcome: { ...this.scoreOutcome },
       playerValue,
       dealerValue,
       visibleDealerValue,

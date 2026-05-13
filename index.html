@@ -31,16 +31,6 @@
             <button class="mode-button" type="button" data-mode="hard">Hard</button>
           </div>
         </div>
-
-        <div class="control-group">
-          <span class="group-title">베팅</span>
-          <div class="bet-grid" role="group" aria-label="베팅 금액">
-            <button class="bet-button" type="button" data-bet="100">$100</button>
-            <button class="bet-button" type="button" data-bet="500">$500</button>
-            <button class="bet-button" type="button" data-bet="1000">$1000</button>
-            <button class="bet-button" type="button" data-bet="10000">$10000</button>
-          </div>
-        </div>
       </section>
 
       <section class="play-area" aria-label="블랙잭 테이블">
@@ -63,14 +53,24 @@
         </div>
       </section>
 
-      <section class="action-bar" aria-label="플레이어 액션">
-        <button id="hit-button" type="button">Hit</button>
-        <button id="stand-button" type="button">Stand</button>
-        <button id="double-button" type="button">Double Down</button>
-        <button id="surrender-button" type="button">Surrender</button>
-        <button id="reset-button" class="secondary" type="button">Reset</button>
+      <section class="action-bar" aria-label="게임 액션">
+        <div id="bet-actions" class="action-group bet-grid" role="group" aria-label="베팅 금액">
+          <button class="bet-button" type="button" data-bet="100">$100</button>
+          <button class="bet-button" type="button" data-bet="500">$500</button>
+          <button class="bet-button" type="button" data-bet="1000">$1000</button>
+          <button class="bet-button" type="button" data-bet="10000">$10000</button>
+        </div>
+
+        <div id="player-actions" class="action-group" role="group" aria-label="플레이어 의사결정" hidden>
+          <button id="hit-button" type="button">Hit</button>
+          <button id="stand-button" type="button">Stand</button>
+          <button id="double-button" type="button">Double Down</button>
+          <button id="surrender-button" type="button">Surrender</button>
+        </div>
       </section>
     </main>
+
+    <div id="money-effects" class="money-effects-layer" aria-hidden="true"></div>
 
     <script type="module" src="./src/main.js"></script>
   </body>
