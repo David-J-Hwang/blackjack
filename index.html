@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blackjack</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+  </head>
+  <body>
+    <main class="table">
+      <section class="status-bar" aria-label="게임 상태">
+        <div>
+          <span class="label">소지금</span>
+          <strong id="money">$1000</strong>
+        </div>
+        <div>
+          <span class="label">현재 베팅</span>
+          <strong id="current-bet">$0</strong>
+        </div>
+        <div>
+          <span class="label">남은 카드</span>
+          <strong id="deck-count">52</strong>
+        </div>
+      </section>
+
+      <section class="controls-panel" aria-label="라운드 설정">
+        <div class="control-group">
+          <span class="group-title">모드</span>
+          <div class="segmented-control" role="group" aria-label="난이도">
+            <button class="mode-button is-active" type="button" data-mode="easy">Easy</button>
+            <button class="mode-button" type="button" data-mode="hard">Hard</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="group-title">베팅</span>
+          <div class="bet-grid" role="group" aria-label="베팅 금액">
+            <button class="bet-button" type="button" data-bet="100">$100</button>
+            <button class="bet-button" type="button" data-bet="500">$500</button>
+            <button class="bet-button" type="button" data-bet="1000">$1000</button>
+            <button class="bet-button" type="button" data-bet="10000">$10000</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="play-area" aria-label="블랙잭 테이블">
+        <div class="hand-row">
+          <div class="hand-heading">
+            <h2>Dealer</h2>
+            <span id="dealer-score" class="score">?</span>
+          </div>
+          <div id="dealer-hand" class="cards" aria-label="딜러 카드"></div>
+        </div>
+
+        <p id="message" class="message" role="status">베팅 금액을 선택해 라운드를 시작하세요.</p>
+
+        <div class="hand-row">
+          <div class="hand-heading">
+            <h2>Player</h2>
+            <span id="player-score" class="score">0</span>
+          </div>
+          <div id="player-hand" class="cards" aria-label="플레이어 카드"></div>
+        </div>
+      </section>
+
+      <section class="action-bar" aria-label="플레이어 액션">
+        <button id="hit-button" type="button">Hit</button>
+        <button id="stand-button" type="button">Stand</button>
+        <button id="double-button" type="button">Double Down</button>
+        <button id="surrender-button" type="button">Surrender</button>
+        <button id="reset-button" class="secondary" type="button">Reset</button>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
