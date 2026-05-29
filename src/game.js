@@ -1,12 +1,11 @@
 import { createDeck, drawCard, shuffleDeck } from './deck.js';
-import { calculateHandValue, isBlackjack, isBust, isSoft17 } from './hand.js';
+import { calculateHandValue, isBlackjack, isBust } from './hand.js';
 
-const STARTING_MONEY = 1000;
+const STARTING_MONEY = 3000;
 const MIN_DECK_SIZE = 15;
 
 export class BlackjackGame {
   constructor() {
-    this.mode = 'easy';
     this.money = STARTING_MONEY;
     this.deck = this.createFreshDeck();
     this.playerHand = [];
@@ -26,16 +25,7 @@ export class BlackjackGame {
     return shuffleDeck(createDeck());
   }
 
-  setMode(mode) {
-    if (!['easy', 'hard'].includes(mode) || ['player-turn', 'dealer-turn'].includes(this.phase)) {
-      return;
-    }
-
-    this.mode = mode;
-  }
-
   resetGame() {
-    this.mode = 'easy';
     this.money = STARTING_MONEY;
     this.deck = this.createFreshDeck();
     this.playerHand = [];
@@ -84,40 +74,9 @@ export class BlackjackGame {
     this.dealCard(this.playerHand);
     this.dealCard(this.dealerHand);
 
-    this.message = 'Hit, Stand, Double Down, Surrender 중 하나를 선택하세요.';
-    this.resolveOpeningBlackjack();
-  }
-
-  resolveOpeningBlackjack() {
-    const playerBlackjack = isBlackjack(this.playerHand);
-    const dealerBlackjack = isBlackjack(this.dealerHand);
-
-    if (!playerBlackjack && !dealerBlackjack) {
-      return;
-    }
-
-    this.dealerRevealed = true;
-
-    if (playerBlackjack && dealerBlackjack) {
-      this.finishRound(this.currentBet, '무승부', {
-        player: 'push',
-        dealer: 'push',
-      });
-      return;
-    }
-
-    if (playerBlackjack) {
-      this.finishRound(this.currentBet * 2.5, '블랙잭!', {
-        player: 'win',
-        dealer: 'lose',
-      });
-      return;
-    }
-
-    this.finishRound(0, '패배...', {
-      player: 'lose',
-      dealer: 'win',
-    });
+    this.message = isBlackjack(this.playerHand)
+      ? '블랙잭입니다. Stand로 결과를 확인하세요.'
+      : 'Hit, Stand, Double Down, Surrender 중 하나를 선택하세요.';
   }
 
   hit() {
@@ -226,16 +185,46 @@ export class BlackjackGame {
   shouldDealerHit() {
     const dealerValue = calculateHandValue(this.dealerHand);
 
+    if (isBlackjack(this.playerHand) || isBlackjack(this.dealerHand)) {
+      return false;
+    }
+
     if (dealerValue.total < 17) {
       return true;
     }
 
-    return this.mode === 'hard' && isSoft17(this.dealerHand);
+    return false;
   }
 
   settleRound() {
     const playerValue = calculateHandValue(this.playerHand);
     const dealerValue = calculateHandValue(this.dealerHand);
+    const playerBlackjack = isBlackjack(this.playerHand);
+    const dealerBlackjack = isBlackjack(this.dealerHand);
+
+    if (playerBlackjack && dealerBlackjack) {
+      this.finishRound(this.currentBet, '무승부', {
+        player: 'push',
+        dealer: 'push',
+      });
+      return;
+    }
+
+    if (playerBlackjack) {
+      this.finishRound(this.currentBet * 2.5, '블랙잭!', {
+        player: 'win',
+        dealer: 'lose',
+      });
+      return;
+    }
+
+    if (dealerBlackjack) {
+      this.finishRound(0, '패배...', {
+        player: 'lose',
+        dealer: 'win',
+      });
+      return;
+    }
 
     if (dealerValue.bust) {
       this.finishRound(
@@ -315,11 +304,21 @@ export class BlackjackGame {
   }
 
   canDoubleDown() {
-    return this.phase === 'player-turn' && this.playerActions === 0 && this.money >= this.currentBet;
+    return (
+      this.phase === 'player-turn'
+      && this.playerActions === 0
+      && calculateHandValue(this.playerHand).total < 21
+      && this.money >= this.currentBet
+    );
   }
 
   canSurrender() {
-    return this.phase === 'player-turn' && this.playerActions === 0 && this.playerHand.length === 2;
+    return (
+      this.phase === 'player-turn'
+      && this.playerActions === 0
+      && this.playerHand.length === 2
+      && calculateHandValue(this.playerHand).total < 21
+    );
   }
 
   getState() {
@@ -329,9 +328,7 @@ export class BlackjackGame {
     const visibleDealerValue = calculateHandValue(visibleDealerHand);
 
     return {
-      mode: this.mode,
       money: this.money,
-      deckCount: this.deck.length,
       currentBet: this.currentBet,
       playerHand: this.playerHand,
       dealerHand: this.dealerHand,
@@ -344,7 +341,7 @@ export class BlackjackGame {
       dealerValue,
       visibleDealerValue,
       availableActions: {
-        hit: this.phase === 'player-turn',
+        hit: this.phase === 'player-turn' && playerValue.total < 21,
         stand: this.phase === 'player-turn',
         doubleDown: this.canDoubleDown(),
         surrender: this.canSurrender(),

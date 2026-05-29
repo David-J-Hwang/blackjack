@@ -36,8 +36,3 @@ export function isBlackjack(hand) {
 export function isBust(hand) {
   return calculateHandValue(hand).bust;
 }
-
-export function isSoft17(hand) {
-  const value = calculateHandValue(hand);
-  return value.total === 17 && value.soft;
-}

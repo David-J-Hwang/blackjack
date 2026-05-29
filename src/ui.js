@@ -1,7 +1,6 @@
 const elements = {
   money: document.querySelector('#money'),
   currentBet: document.querySelector('#current-bet'),
-  deckCount: document.querySelector('#deck-count'),
   dealerHand: document.querySelector('#dealer-hand'),
   playerHand: document.querySelector('#player-hand'),
   moneyEffects: document.querySelector('#money-effects'),
@@ -11,7 +10,6 @@ const elements = {
   betActions: document.querySelector('#bet-actions'),
   playerActions: document.querySelector('#player-actions'),
   betButtons: [...document.querySelectorAll('.bet-button')],
-  modeButtons: [...document.querySelectorAll('.mode-button')],
   hitButton: document.querySelector('#hit-button'),
   standButton: document.querySelector('#stand-button'),
   doubleButton: document.querySelector('#double-button'),
@@ -25,12 +23,6 @@ export function bindEvents(handlers) {
   elements.betButtons.forEach((button) => {
     button.addEventListener('click', () => {
       handlers.onStartRound(Number(button.dataset.bet));
-    });
-  });
-
-  elements.modeButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      handlers.onModeChange(button.dataset.mode);
     });
   });
 
@@ -49,7 +41,6 @@ export function bindEvents(handlers) {
 export function renderGame(state) {
   elements.money.textContent = formatMoney(state.money);
   elements.currentBet.textContent = formatMoney(state.currentBet);
-  elements.deckCount.textContent = String(state.deckCount);
   elements.message.textContent = state.message;
   renderMoneyEffects(state.moneyEffects);
 
@@ -140,21 +131,12 @@ function getCardKey(card, hidden) {
 function renderControls(state) {
   const canBet = ['betting', 'round-over'].includes(state.phase);
   const playerTurn = state.phase === 'player-turn';
-  const dealerTurn = state.phase === 'dealer-turn';
-  const gameOver = state.phase === 'game-over';
 
   elements.betActions.hidden = !canBet;
   elements.playerActions.hidden = !playerTurn;
   elements.betButtons.forEach((button) => {
     const bet = Number(button.dataset.bet);
     button.disabled = !canBet || state.money < bet;
-  });
-
-  elements.modeButtons.forEach((button) => {
-    const selected = button.dataset.mode === state.mode;
-    button.classList.toggle('is-active', selected);
-    button.disabled = playerTurn || dealerTurn || gameOver;
-    button.setAttribute('aria-pressed', String(selected));
   });
 
   elements.hitButton.disabled = !state.availableActions.hit;

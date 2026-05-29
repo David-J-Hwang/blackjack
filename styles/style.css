@@ -16,6 +16,10 @@
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -64,12 +68,17 @@ button:disabled {
   background-size: 34px 34px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
   gap: 18px;
 }
 
+@supports (min-height: 100dvh) {
+  .table {
+    min-height: calc(100dvh - 32px);
+  }
+}
+
 .status-bar,
-.controls-panel,
 .action-bar {
   display: flex;
   align-items: center;
@@ -142,8 +151,7 @@ button:disabled {
   }
 }
 
-.label,
-.group-title {
+.label {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 700;
@@ -154,24 +162,11 @@ button:disabled {
   font-size: 1.35rem;
 }
 
-.controls-panel {
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.control-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.segmented-control,
 .bet-grid {
   display: flex;
   gap: 8px;
 }
 
-.mode-button.is-active,
 .bet-button:hover:not(:disabled),
 .action-group button:hover:not(:disabled) {
   background: var(--gold);
@@ -181,11 +176,12 @@ button:disabled {
 .play-area {
   min-height: 460px;
   display: grid;
-  grid-template-rows: 1fr auto 1fr;
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 14px;
 }
 
 .hand-row {
+  min-height: 0;
   display: grid;
   align-content: center;
   gap: 12px;
@@ -234,6 +230,7 @@ button:disabled {
   min-height: 148px;
   display: flex;
   align-items: center;
+  align-content: center;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -346,52 +343,232 @@ button:disabled {
   background: rgba(231, 189, 99, 0.18);
 }
 
-@media (max-width: 680px) {
+@media (max-width: 900px) {
+  body {
+    min-height: 100svh;
+  }
+
   .table {
     width: 100%;
-    min-height: 100vh;
+    height: 100svh;
+    min-height: 100svh;
     margin: 0;
-    border-width: 10px;
+    border-width: 12px;
     border-radius: 0;
     padding: 14px;
+    gap: 12px;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+
+  @supports (height: 100dvh) {
+    body {
+      min-height: 100dvh;
+    }
+
+    .table {
+      height: 100dvh;
+      min-height: 100dvh;
+    }
   }
 
   .status-bar {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .status-bar strong {
+    font-size: 1.08rem;
+  }
+
+  .bet-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .play-area {
+    min-height: 0;
+    gap: 10px;
+    overflow: hidden;
+  }
+
+  .hand-row {
+    min-height: 0;
+    gap: 8px;
+  }
+
+  .score {
+    min-width: 76px;
+    padding: 7px 12px;
+    font-size: 1.18rem;
+  }
+
+  .cards {
+    min-height: 0;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .card {
+    width: clamp(62px, 9vw, 84px);
+    padding: 8px;
+  }
+
+  .card-rank {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .card-suit {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+  }
+
+  .message {
+    min-height: 44px;
+    padding: 10px 8px;
+    font-size: 0.94rem;
+  }
+
+  .action-bar {
+    padding-top: 8px;
+  }
+
+  .action-group {
+    gap: 8px;
+  }
+
+  .action-bar button {
+    flex: 1;
+    min-height: 40px;
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .table {
+    border-width: 8px;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .status-bar {
+    padding-bottom: 9px;
   }
 
   .status-bar strong {
     font-size: 1rem;
   }
 
-  .control-group,
-  .segmented-control,
-  .bet-grid {
-    width: 100%;
+  .label {
+    font-size: 0.7rem;
   }
 
   .bet-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #player-actions {
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .mode-button,
-  .action-bar button {
-    flex: 1;
-  }
-
   .play-area {
-    min-height: 430px;
-  }
-
-  .cards {
-    min-height: 116px;
     gap: 8px;
   }
 
+  .cards {
+    gap: 6px;
+  }
+
   .card {
-    width: clamp(64px, 22vw, 86px);
+    width: clamp(52px, 18vw, 72px);
+    padding: 7px;
+  }
+
+  .card-rank {
+    font-size: clamp(1.7rem, 7vw, 2.35rem);
+  }
+
+  .card-suit {
+    font-size: clamp(0.86rem, 3.2vw, 1.05rem);
+  }
+
+  .message {
+    min-height: 40px;
+    padding: 8px 6px;
+    font-size: 0.86rem;
+  }
+
+  .action-bar {
+    padding-top: 7px;
+  }
+
+  .action-group button {
+    min-height: 38px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-height: 700px) {
+  .table {
+    gap: 8px;
+  }
+
+  .status-bar {
+    padding-bottom: 8px;
+  }
+
+  .play-area {
+    gap: 6px;
+  }
+
+  .hand-row {
+    gap: 6px;
+  }
+
+  .cards {
+    gap: 6px;
+  }
+
+  .card {
+    width: clamp(48px, 12vh, 66px);
+    padding: 6px;
+  }
+
+  .card-rank {
+    font-size: clamp(1.45rem, 6vh, 2rem);
+  }
+
+  .card-suit {
+    font-size: clamp(0.76rem, 3vh, 0.95rem);
+  }
+
+  .score {
+    min-width: 68px;
+    padding: 6px 10px;
+    font-size: 1rem;
+  }
+
+  .message {
+    min-height: 36px;
+    padding: 7px 6px;
+    font-size: 0.82rem;
+  }
+
+  .action-bar {
+    padding-top: 6px;
+  }
+
+  .action-group {
+    gap: 6px;
+  }
+
+  .action-group button {
+    min-height: 34px;
+    font-size: 0.8rem;
   }
 }
 

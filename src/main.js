@@ -55,10 +55,6 @@ bindEvents({
     game.startRound(bet);
     update();
   },
-  onModeChange(mode) {
-    game.setMode(mode);
-    update();
-  },
   async onHit() {
     game.hit();
     await updateAfterPlayerAction();
