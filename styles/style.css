@@ -410,17 +410,90 @@ button:disabled {
     overflow: hidden;
   }
 
+  .cards[data-card-count="5"] {
+    gap: 7px;
+  }
+
+  .cards[data-card-count="6"] {
+    gap: 6px;
+  }
+
+  .cards[data-card-count="7"],
+  .cards[data-card-count="8"] {
+    gap: 5px;
+  }
+
+  .cards[data-card-count="9"],
+  .cards[data-card-count="10"],
+  .cards[data-card-count="11"] {
+    gap: 4px;
+  }
+
   .card {
     width: clamp(62px, 9vw, 84px);
     padding: 8px;
+  }
+
+  .cards[data-card-count="5"] .card {
+    width: min(76px, calc(20% - 6px));
+  }
+
+  .cards[data-card-count="6"] .card {
+    width: min(66px, calc(16.666% - 5px));
+  }
+
+  .cards[data-card-count="7"] .card {
+    width: min(58px, calc(14.285% - 5px));
+  }
+
+  .cards[data-card-count="8"] .card {
+    width: min(50px, calc(12.5% - 5px));
+  }
+
+  .cards[data-card-count="9"] .card {
+    width: min(44px, calc(11.111% - 4px));
+  }
+
+  .cards[data-card-count="10"] .card {
+    width: min(40px, calc(10% - 4px));
+  }
+
+  .cards[data-card-count="11"] .card {
+    width: min(36px, calc(9.09% - 4px));
   }
 
   .card-rank {
     font-size: clamp(2rem, 4vw, 3rem);
   }
 
+  .cards[data-card-count="5"] .card-rank,
+  .cards[data-card-count="6"] .card-rank {
+    font-size: clamp(1.55rem, 3.3vw, 2.2rem);
+  }
+
+  .cards[data-card-count="7"] .card-rank,
+  .cards[data-card-count="8"] .card-rank,
+  .cards[data-card-count="9"] .card-rank,
+  .cards[data-card-count="10"] .card-rank,
+  .cards[data-card-count="11"] .card-rank {
+    font-size: clamp(1.12rem, 2.7vw, 1.65rem);
+  }
+
   .card-suit {
     font-size: clamp(1rem, 2vw, 1.3rem);
+  }
+
+  .cards[data-card-count="5"] .card-suit,
+  .cards[data-card-count="6"] .card-suit {
+    font-size: clamp(0.82rem, 1.8vw, 1.05rem);
+  }
+
+  .cards[data-card-count="7"] .card-suit,
+  .cards[data-card-count="8"] .card-suit,
+  .cards[data-card-count="9"] .card-suit,
+  .cards[data-card-count="10"] .card-suit,
+  .cards[data-card-count="11"] .card-suit {
+    font-size: clamp(0.64rem, 1.45vw, 0.86rem);
   }
 
   .message {
@@ -483,17 +556,97 @@ button:disabled {
     gap: 6px;
   }
 
+  .cards[data-card-count="5"],
+  .cards[data-card-count="6"] {
+    gap: 5px;
+  }
+
+  .cards[data-card-count="7"],
+  .cards[data-card-count="8"],
+  .cards[data-card-count="9"],
+  .cards[data-card-count="10"],
+  .cards[data-card-count="11"] {
+    gap: 4px;
+  }
+
   .card {
     width: clamp(52px, 18vw, 72px);
     padding: 7px;
+  }
+
+  .cards[data-card-count="5"] .card {
+    width: min(52px, calc(20% - 5px));
+    padding: 6px;
+  }
+
+  .cards[data-card-count="6"] .card {
+    width: min(46px, calc(16.666% - 5px));
+    padding: 5px;
+  }
+
+  .cards[data-card-count="7"] .card {
+    width: min(40px, calc(14.285% - 4px));
+    padding: 5px;
+  }
+
+  .cards[data-card-count="8"] .card {
+    width: min(36px, calc(12.5% - 4px));
+    padding: 4px;
+  }
+
+  .cards[data-card-count="9"] .card {
+    width: min(31px, calc(11.111% - 4px));
+    padding: 4px;
+  }
+
+  .cards[data-card-count="10"] .card {
+    width: min(28px, calc(10% - 4px));
+    padding: 3px;
+  }
+
+  .cards[data-card-count="11"] .card {
+    width: min(25px, calc(9.09% - 4px));
+    padding: 3px;
   }
 
   .card-rank {
     font-size: clamp(1.7rem, 7vw, 2.35rem);
   }
 
+  .cards[data-card-count="5"] .card-rank {
+    font-size: clamp(1.35rem, 5.2vw, 1.8rem);
+  }
+
+  .cards[data-card-count="6"] .card-rank,
+  .cards[data-card-count="7"] .card-rank {
+    font-size: clamp(1.05rem, 4.2vw, 1.45rem);
+  }
+
+  .cards[data-card-count="8"] .card-rank,
+  .cards[data-card-count="9"] .card-rank,
+  .cards[data-card-count="10"] .card-rank,
+  .cards[data-card-count="11"] .card-rank {
+    font-size: clamp(0.82rem, 3.4vw, 1.1rem);
+  }
+
   .card-suit {
     font-size: clamp(0.86rem, 3.2vw, 1.05rem);
+  }
+
+  .cards[data-card-count="5"] .card-suit {
+    font-size: clamp(0.72rem, 2.8vw, 0.92rem);
+  }
+
+  .cards[data-card-count="6"] .card-suit,
+  .cards[data-card-count="7"] .card-suit {
+    font-size: clamp(0.6rem, 2.4vw, 0.76rem);
+  }
+
+  .cards[data-card-count="8"] .card-suit,
+  .cards[data-card-count="9"] .card-suit,
+  .cards[data-card-count="10"] .card-suit,
+  .cards[data-card-count="11"] .card-suit {
+    font-size: clamp(0.5rem, 2vw, 0.62rem);
   }
 
   .message {

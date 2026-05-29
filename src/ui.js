@@ -89,6 +89,7 @@ function applyScoreStatus(element, outcome, bust) {
 }
 
 function renderHand(container, hand, hideSecondCard = false) {
+  container.dataset.cardCount = String(hand.length);
   container.replaceChildren();
 
   hand.forEach((card, index) => {
