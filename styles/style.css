@@ -306,6 +306,7 @@ button:disabled {
 }
 
 .cards {
+  max-width: 100%;
   min-height: 0;
   display: flex;
   align-items: center;
@@ -486,6 +487,8 @@ button:disabled {
   .cards {
     min-height: 0;
     gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: center;
     overflow: hidden;
   }
 
@@ -808,6 +811,67 @@ button:disabled {
     font-size: clamp(0.5rem, 2vw, 0.62rem);
   }
 
+  .player-hands.is-split .cards[data-card-count="5"] .card {
+    width: min(28px, calc(20% - 4px));
+    padding: 3px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="6"] .card {
+    width: min(24px, calc(16.666% - 4px));
+    padding: 3px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="7"] .card {
+    width: min(21px, calc(14.285% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="8"] .card {
+    width: min(20px, calc(12.5% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="9"] .card {
+    width: min(18px, calc(11.111% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="10"] .card {
+    width: min(16px, calc(10% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="11"] .card {
+    width: min(15px, calc(9.09% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="5"] .card-rank,
+  .player-hands.is-split .cards[data-card-count="6"] .card-rank {
+    font-size: clamp(0.72rem, 3vw, 0.92rem);
+  }
+
+  .player-hands.is-split .cards[data-card-count="7"] .card-rank,
+  .player-hands.is-split .cards[data-card-count="8"] .card-rank,
+  .player-hands.is-split .cards[data-card-count="9"] .card-rank,
+  .player-hands.is-split .cards[data-card-count="10"] .card-rank,
+  .player-hands.is-split .cards[data-card-count="11"] .card-rank {
+    font-size: clamp(0.58rem, 2.5vw, 0.76rem);
+  }
+
+  .player-hands.is-split .cards[data-card-count="5"] .card-suit,
+  .player-hands.is-split .cards[data-card-count="6"] .card-suit {
+    font-size: clamp(0.46rem, 1.8vw, 0.56rem);
+  }
+
+  .player-hands.is-split .cards[data-card-count="7"] .card-suit,
+  .player-hands.is-split .cards[data-card-count="8"] .card-suit,
+  .player-hands.is-split .cards[data-card-count="9"] .card-suit,
+  .player-hands.is-split .cards[data-card-count="10"] .card-suit,
+  .player-hands.is-split .cards[data-card-count="11"] .card-suit {
+    font-size: clamp(0.4rem, 1.6vw, 0.5rem);
+  }
+
   .message {
     min-height: 40px;
     padding: 8px 6px;
@@ -906,6 +970,110 @@ button:disabled {
   .action-group button {
     min-height: 34px;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 900px) and (max-height: 700px) {
+  .cards[data-card-count="5"] .card {
+    width: min(46px, calc(20% - 5px));
+    padding: 5px;
+  }
+
+  .cards[data-card-count="6"] .card {
+    width: min(40px, calc(16.666% - 5px));
+    padding: 4px;
+  }
+
+  .cards[data-card-count="7"] .card {
+    width: min(34px, calc(14.285% - 4px));
+    padding: 4px;
+  }
+
+  .cards[data-card-count="8"] .card {
+    width: min(30px, calc(12.5% - 4px));
+    padding: 3px;
+  }
+
+  .cards[data-card-count="9"] .card {
+    width: min(28px, calc(11.111% - 4px));
+    padding: 3px;
+  }
+
+  .cards[data-card-count="10"] .card {
+    width: min(26px, calc(10% - 4px));
+    padding: 3px;
+  }
+
+  .cards[data-card-count="11"] .card {
+    width: min(24px, calc(9.09% - 4px));
+    padding: 3px;
+  }
+
+  .cards[data-card-count="5"] .card-rank {
+    font-size: clamp(1.15rem, 4.8vw, 1.45rem);
+  }
+
+  .cards[data-card-count="6"] .card-rank,
+  .cards[data-card-count="7"] .card-rank {
+    font-size: clamp(0.9rem, 3.8vw, 1.18rem);
+  }
+
+  .cards[data-card-count="8"] .card-rank,
+  .cards[data-card-count="9"] .card-rank,
+  .cards[data-card-count="10"] .card-rank,
+  .cards[data-card-count="11"] .card-rank {
+    font-size: clamp(0.72rem, 3vw, 0.92rem);
+  }
+
+  .cards[data-card-count="5"] .card-suit {
+    font-size: clamp(0.62rem, 2.5vw, 0.78rem);
+  }
+
+  .cards[data-card-count="6"] .card-suit,
+  .cards[data-card-count="7"] .card-suit {
+    font-size: clamp(0.5rem, 2vw, 0.64rem);
+  }
+
+  .cards[data-card-count="8"] .card-suit,
+  .cards[data-card-count="9"] .card-suit,
+  .cards[data-card-count="10"] .card-suit,
+  .cards[data-card-count="11"] .card-suit {
+    font-size: clamp(0.42rem, 1.8vw, 0.52rem);
+  }
+
+  .player-hands.is-split .cards[data-card-count="5"] .card {
+    width: min(26px, calc(20% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="6"] .card {
+    width: min(22px, calc(16.666% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="7"] .card {
+    width: min(20px, calc(14.285% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="8"] .card {
+    width: min(18px, calc(12.5% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="9"] .card {
+    width: min(17px, calc(11.111% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="10"] .card {
+    width: min(15px, calc(10% - 4px));
+    padding: 2px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="11"] .card {
+    width: min(14px, calc(9.09% - 4px));
+    padding: 2px;
   }
 }
 
