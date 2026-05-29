@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ace of spades favicon">
+  <rect width="64" height="64" rx="14" fill="#083d31"/>
+  <rect x="17" y="9" width="30" height="46" rx="6" fill="#1f1713" opacity="0.28" transform="translate(2 2)"/>
+  <rect x="17" y="9" width="30" height="46" rx="6" fill="#fff9ef" stroke="#1f1713" stroke-width="2.5"/>
+  <text x="32" y="34" fill="#202124" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="900" text-anchor="middle">A</text>
+  <text x="32" y="49" fill="#202124" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="900" text-anchor="middle">♠</text>
+</svg>
