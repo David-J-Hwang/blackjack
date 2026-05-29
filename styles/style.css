@@ -207,6 +207,10 @@ button:disabled {
   letter-spacing: 0;
 }
 
+.hand-row.is-split .hand-heading {
+  display: none;
+}
+
 .score {
   min-width: 92px;
   border-radius: 999px;
@@ -243,7 +247,7 @@ button:disabled {
 
 .player-hands.is-split {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: center;
+  align-items: start;
 }
 
 .player-hand-panel {
@@ -494,6 +498,11 @@ button:disabled {
     gap: 12px;
   }
 
+  .player-hands.is-split .cards {
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
   .player-hand-panel {
     gap: 7px;
   }
@@ -656,6 +665,43 @@ button:disabled {
     gap: 9px;
   }
 
+  .player-hands.is-split .cards {
+    gap: 4px;
+  }
+
+  .player-hands.is-split .card {
+    width: min(48px, calc(50% - 3px));
+    padding: 5px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="3"] .card {
+    width: min(36px, calc(33.333% - 3px));
+    padding: 4px;
+  }
+
+  .player-hands.is-split .cards[data-card-count="4"] .card {
+    width: min(30px, calc(25% - 3px));
+    padding: 3px;
+  }
+
+  .player-hands.is-split .card-rank {
+    font-size: clamp(1.15rem, 4.8vw, 1.65rem);
+  }
+
+  .player-hands.is-split .card-suit {
+    font-size: clamp(0.66rem, 2.6vw, 0.9rem);
+  }
+
+  .player-hands.is-split .cards[data-card-count="3"] .card-rank,
+  .player-hands.is-split .cards[data-card-count="4"] .card-rank {
+    font-size: clamp(0.78rem, 3.3vw, 1.08rem);
+  }
+
+  .player-hands.is-split .cards[data-card-count="3"] .card-suit,
+  .player-hands.is-split .cards[data-card-count="4"] .card-suit {
+    font-size: clamp(0.5rem, 2vw, 0.62rem);
+  }
+
   .split-hand-heading {
     gap: 5px;
   }
@@ -804,6 +850,11 @@ button:disabled {
 
   .player-hands {
     gap: 6px;
+  }
+
+  .player-hands.is-split .card {
+    width: min(42px, calc(50% - 3px));
+    padding: 4px;
   }
 
   .player-hand-panel {

@@ -92,7 +92,9 @@ function applyScoreStatus(element, outcome, bust) {
 
 function renderPlayerHands(state) {
   const split = state.playerHands.length > 1;
+  const playerRow = elements.playerHands.closest('.hand-row');
 
+  playerRow?.classList.toggle('is-split', split);
   elements.playerHands.classList.toggle('is-split', split);
   elements.playerHands.replaceChildren();
 
