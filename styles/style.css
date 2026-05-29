@@ -23,6 +23,7 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
+  overflow: hidden;
   color: var(--ink);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -56,7 +57,8 @@ button:disabled {
 
 .table {
   width: min(1120px, calc(100% - 32px));
-  min-height: calc(100vh - 32px);
+  height: calc(100vh - 32px);
+  min-height: 0;
   margin: 16px auto;
   border: 18px solid var(--rail);
   border-radius: 24px;
@@ -68,13 +70,18 @@ button:disabled {
   background-size: 34px 34px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 18px;
+  overflow: hidden;
 }
 
-@supports (min-height: 100dvh) {
+@supports (height: 100dvh) {
+  body {
+    min-height: 100dvh;
+  }
+
   .table {
-    min-height: calc(100dvh - 32px);
+    height: calc(100dvh - 32px);
   }
 }
 
@@ -174,10 +181,11 @@ button:disabled {
 }
 
 .play-area {
-  min-height: 460px;
+  min-height: 0;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 14px;
+  overflow: hidden;
 }
 
 .hand-row {
@@ -226,8 +234,75 @@ button:disabled {
   background: #d8dee9;
 }
 
+.player-hands {
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+
+.player-hands.is-split {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+}
+
+.player-hand-panel {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.player-hand-panel.is-active {
+  border-radius: 8px;
+  outline: 2px solid rgba(231, 189, 99, 0.7);
+  outline-offset: 6px;
+}
+
+.split-hand-heading {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.split-hand-title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.split-hand-score {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: #241b0f;
+  background: var(--gold);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.split-hand-score.is-loser {
+  color: white;
+  background: var(--red);
+}
+
+.split-hand-score.is-winner {
+  color: #072a1a;
+  background: #4fe08b;
+}
+
+.split-hand-score.is-push {
+  color: #17202a;
+  background: #d8dee9;
+}
+
 .cards {
-  min-height: 148px;
+  min-height: 0;
   display: flex;
   align-items: center;
   align-content: center;
@@ -410,6 +485,23 @@ button:disabled {
     overflow: hidden;
   }
 
+  .player-hands {
+    min-height: 0;
+    gap: 10px;
+  }
+
+  .player-hands.is-split {
+    gap: 12px;
+  }
+
+  .player-hand-panel {
+    gap: 7px;
+  }
+
+  .player-hand-panel.is-active {
+    outline-offset: 4px;
+  }
+
   .cards[data-card-count="5"] {
     gap: 7px;
   }
@@ -545,7 +637,7 @@ button:disabled {
   #player-actions {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .play-area {
@@ -554,6 +646,27 @@ button:disabled {
 
   .cards {
     gap: 6px;
+  }
+
+  .player-hands {
+    gap: 8px;
+  }
+
+  .player-hands.is-split {
+    gap: 9px;
+  }
+
+  .split-hand-heading {
+    gap: 5px;
+  }
+
+  .split-hand-title {
+    font-size: 0.68rem;
+  }
+
+  .split-hand-score {
+    padding: 4px 7px;
+    font-size: 0.72rem;
   }
 
   .cards[data-card-count="5"],
@@ -661,13 +774,16 @@ button:disabled {
 
   .action-group button {
     min-height: 38px;
-    font-size: 0.85rem;
+    padding: 0 8px;
+    font-size: 0.78rem;
   }
 }
 
 @media (max-height: 700px) {
   .table {
     gap: 8px;
+    border-width: 12px;
+    padding: 14px;
   }
 
   .status-bar {
@@ -684,6 +800,23 @@ button:disabled {
 
   .cards {
     gap: 6px;
+  }
+
+  .player-hands {
+    gap: 6px;
+  }
+
+  .player-hand-panel {
+    gap: 5px;
+  }
+
+  .split-hand-title {
+    font-size: 0.62rem;
+  }
+
+  .split-hand-score {
+    padding: 3px 6px;
+    font-size: 0.66rem;
   }
 
   .card {

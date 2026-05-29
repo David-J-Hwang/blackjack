@@ -2,7 +2,7 @@ const elements = {
   money: document.querySelector('#money'),
   currentBet: document.querySelector('#current-bet'),
   dealerHand: document.querySelector('#dealer-hand'),
-  playerHand: document.querySelector('#player-hand'),
+  playerHands: document.querySelector('#player-hands'),
   moneyEffects: document.querySelector('#money-effects'),
   dealerScore: document.querySelector('#dealer-score'),
   playerScore: document.querySelector('#player-score'),
@@ -14,6 +14,7 @@ const elements = {
   standButton: document.querySelector('#stand-button'),
   doubleButton: document.querySelector('#double-button'),
   surrenderButton: document.querySelector('#surrender-button'),
+  splitButton: document.querySelector('#split-button'),
 };
 
 let lastMoneyEffectId = 0;
@@ -30,6 +31,7 @@ export function bindEvents(handlers) {
   elements.standButton.addEventListener('click', handlers.onStand);
   elements.doubleButton.addEventListener('click', handlers.onDoubleDown);
   elements.surrenderButton.addEventListener('click', handlers.onSurrender);
+  elements.splitButton.addEventListener('click', handlers.onSplit);
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
@@ -55,7 +57,7 @@ export function renderGame(state) {
     state.dealerRevealed && state.dealerValue.bust,
   );
 
-  renderHand(elements.playerHand, state.playerHand);
+  renderPlayerHands(state);
   renderHand(elements.dealerHand, state.dealerHand, !state.dealerRevealed);
   renderControls(state);
 }
@@ -86,6 +88,47 @@ function applyScoreStatus(element, outcome, bust) {
   element.classList.toggle('is-winner', outcome === 'win');
   element.classList.toggle('is-loser', outcome === 'lose' || bust);
   element.classList.toggle('is-push', outcome === 'push');
+}
+
+function renderPlayerHands(state) {
+  const split = state.playerHands.length > 1;
+
+  elements.playerHands.classList.toggle('is-split', split);
+  elements.playerHands.replaceChildren();
+
+  state.playerHands.forEach((hand) => {
+    const handElement = document.createElement('section');
+    const cardsElement = document.createElement('div');
+
+    handElement.className = 'player-hand-panel';
+    handElement.classList.toggle('is-active', split && hand.active);
+    handElement.classList.toggle('is-winner', hand.outcome === 'win');
+    handElement.classList.toggle('is-loser', hand.outcome === 'lose' || hand.value.bust);
+    handElement.classList.toggle('is-push', hand.outcome === 'push');
+
+    if (split) {
+      const headingElement = document.createElement('div');
+      const titleElement = document.createElement('span');
+      const scoreElement = document.createElement('span');
+
+      headingElement.className = 'split-hand-heading';
+      titleElement.className = 'split-hand-title';
+      titleElement.textContent = `${hand.label} ${formatMoney(hand.bet)}`;
+      scoreElement.className = 'split-hand-score';
+      scoreElement.textContent = formatScore(hand.value);
+      applyScoreStatus(scoreElement, hand.outcome, hand.value.bust);
+
+      headingElement.append(titleElement, scoreElement);
+      handElement.append(headingElement);
+    }
+
+    cardsElement.className = 'cards';
+    cardsElement.setAttribute('aria-label', `${hand.label} 카드`);
+    renderHand(cardsElement, hand.cards);
+
+    handElement.append(cardsElement);
+    elements.playerHands.append(handElement);
+  });
 }
 
 function renderHand(container, hand, hideSecondCard = false) {
@@ -144,6 +187,7 @@ function renderControls(state) {
   elements.standButton.disabled = !state.availableActions.stand;
   elements.doubleButton.disabled = !state.availableActions.doubleDown;
   elements.surrenderButton.disabled = !state.availableActions.surrender;
+  elements.splitButton.disabled = !state.availableActions.split;
 }
 
 function formatScore(value, visibleOnly = false) {
