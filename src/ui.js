@@ -92,6 +92,7 @@ function applyScoreStatus(element, outcome, bust) {
 
 function renderPlayerHands(state) {
   const split = state.playerHands.length > 1;
+  const splitReady = state.availableActions.split;
   const playerRow = elements.playerHands.closest('.hand-row');
 
   playerRow?.classList.toggle('is-split', split);
@@ -125,6 +126,7 @@ function renderPlayerHands(state) {
     }
 
     cardsElement.className = 'cards';
+    cardsElement.classList.toggle('is-split-ready', !split && hand.active && splitReady);
     cardsElement.setAttribute('aria-label', `${hand.label} 카드`);
     renderHand(cardsElement, hand.cards);
 

@@ -316,6 +316,7 @@ button:disabled {
 }
 
 .card {
+  position: relative;
   width: clamp(78px, 11vw, 112px);
   aspect-ratio: 5 / 7;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -327,6 +328,7 @@ button:disabled {
   display: grid;
   grid-template-rows: 1fr auto;
   place-items: center;
+  overflow: hidden;
 }
 
 .card.is-new {
@@ -365,6 +367,31 @@ button:disabled {
     #183d62;
 }
 
+.cards.is-split-ready .card {
+  border-color: rgba(231, 189, 99, 0.88);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.18),
+    0 0 0 2px rgba(231, 189, 99, 0.25),
+    0 0 24px rgba(231, 189, 99, 0.46);
+}
+
+.cards.is-split-ready .card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 2px rgba(231, 189, 99, 0.68),
+    inset 0 0 22px rgba(231, 189, 99, 0.32);
+  opacity: 0.44;
+  pointer-events: none;
+  animation: split-ready-glow 1.35s ease-in-out infinite;
+}
+
+.cards.is-split-ready .card:nth-child(2)::after {
+  animation-delay: 160ms;
+}
+
 @keyframes deal-card {
   0% {
     opacity: 0;
@@ -391,6 +418,17 @@ button:disabled {
   100% {
     opacity: 1;
     transform: perspective(720px) rotateY(0deg) scale(1);
+  }
+}
+
+@keyframes split-ready-glow {
+  0%,
+  100% {
+    opacity: 0.36;
+  }
+
+  50% {
+    opacity: 0.92;
   }
 }
 
@@ -464,7 +502,7 @@ button:disabled {
   .bet-grid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .play-area {
@@ -643,7 +681,7 @@ button:disabled {
   }
 
   .bet-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   #player-actions {
@@ -1078,6 +1116,7 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cards.is-split-ready .card::after,
   .card.is-new,
   .card.is-flipping-in,
   .money-change {
